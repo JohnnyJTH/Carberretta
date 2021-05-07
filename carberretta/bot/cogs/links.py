@@ -54,7 +54,7 @@ class Links(commands.Cog):
     @commands.command(name="pep")
     async def command_pep(self, ctx: commands.Context, pep_number: int) -> None:
         async with self.bot.session.get(f"https://python.org/dev/peps/pep-{pep_number:04}") as response:
-            if response.status != 200:
+            if not 200 <= response.status <= 299:
                 await ctx.send(f"PEP {pep_number:04} could not be found.")
                 return
 
@@ -66,6 +66,13 @@ class Links(commands.Cog):
             return await ctx.send("Your query should be no longer than 500 characters.")
 
         await ctx.send(f"<https://letmegooglethat.com/?q={query.replace(' ', '+'}>")
+
+    @commands.command(name="google", aliases=['lmgt', 'lmgtfy'])
+    async def command_google(self, ctx: commands.Context, *, query: str) -> None:
+        if len(query) > 500:
+            return await ctx.send("Your query should be no longer than 500 characters.")
+
+        await ctx.send(f"<https://letmegooglethat.com/?q={query.replace(' ', '+')}>")
 
 
 def setup(bot: commands.Bot) -> None:
